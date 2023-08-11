@@ -1,16 +1,25 @@
 
 def html_view(data):
-    html = f"""
+    html = f'''
+    <!DOCTYPE html>
     <html>
     <head>
     <style>
-    .center {{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-size: 36px;
-    }}
+        body {{
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: Arial, sans-serif;
+        }}
+
+        .center {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 36px;
+        }}
     </style>
     </head>
     <body>
@@ -19,6 +28,6 @@ def html_view(data):
     </div>
     </body>
     </html>
-    """
+    '''
 
     return html

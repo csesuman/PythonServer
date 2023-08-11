@@ -14,8 +14,13 @@ def hello_world():
 
 @app.route('/myip')
 def my_ip():
-    ip = request.headers.getlist("X-Forwarded-For")[0]
-    return Utils.html_view("Your Public IP: " + ip)
+    x_forwarded_for = request.headers.getlist("X-Forwarded-For")
+
+    if x_forwarded_for:
+        ip = x_forwarded_for[0]
+        return Utils.html_view("Your Public IP: " + ip)
+    else:
+        return Utils.html_view("Sorry, can't detect your public IP.")
 
 
 def generate_password(length=12):
