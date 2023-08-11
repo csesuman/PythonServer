@@ -1,15 +1,22 @@
+import time
+
 from flask import Flask, request, jsonify, send_file, render_template
+
+import urllib.request
+# from flask import requests
 import Utils
-import Constants
 import random
 import string
+import time
+
+from Pages import home, reload
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def hello_world():
-    return 'Hello from Suman Bhadra! wanna see your ip?'
+    return home.home_view()
 
 
 @app.route('/myip')
@@ -36,6 +43,15 @@ def get_random_password():
     return jsonify({"password": password})
 
 
+hit = 0
+
+@app.route('/reload', methods=['GET'])
+def call_self():
+    global hit
+    hit = hit + 1
+    return reload.reload_view(hit)
+
+
 @app.route('/get_file', methods=['GET'])
 def get_file():
     # Specify the path to the file you want to send
@@ -45,7 +61,7 @@ def get_file():
     with open(file_path, 'r') as file:
         file_contents = file.read()
 
-    return render_template('file_page.html', file_contents=file_contents)
+    return render_template('file_page.Pages', file_contents=file_contents)
 
 
 @app.route('/details', methods=['GET', 'POST'])
@@ -59,10 +75,10 @@ def request_details():
     # Verify the password
 
     # Extract the password from the request headers
-    password = headers.get('Password')
-
-    if password != Constants.CORRECT_PASSWORD:
-        return jsonify({"message": "Unauthorized: Invalid password"}), 401
+    # password = headers.get('Password')
+    #
+    # if password != Constants.CORRECT_PASSWORD:
+    #     return jsonify({"message": "Unauthorized: Invalid password"}), 401
 
     response = {
         "message": "Request details fetched successfully!",
