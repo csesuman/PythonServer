@@ -1,9 +1,11 @@
 def password_generate_view():
+    dropdown_options = ''.join([f'<option value="{i}">{i}</option>' for i in range(1, 513)])
+
     html = f"""
     <!DOCTYPE html>
     <html>  
     <head>
-        <title>Fetch and Copy Password</title>
+        <title>Strong Password Generator</title>
         <style>
             body {{
                 font-family: Arial, sans-serif;
@@ -12,7 +14,7 @@ def password_generate_view():
                 align-items: center;
                 height: 100vh;
                 margin: 0;
-                background-color: #f4f4f4;
+                background-color: black;
             }}
 
             .container {{
@@ -61,8 +63,10 @@ def password_generate_view():
 
 
     <div class="container">
-        <h1>Fetch and Copy Password</h1>
-        <input type="text" id="parameterInput" placeholder="Enter Parameter">
+        <h1>Strong Password Generator</h1>
+        <select id="parameterInput">
+            {dropdown_options}
+        </select>
         <button id="fetchButton">Fetch Value</button>
         <div id="result"></div>
         <button id="copyButton" style="display: none;">Copy Password</button>

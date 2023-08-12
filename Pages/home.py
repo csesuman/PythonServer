@@ -49,7 +49,7 @@ def home_view():
     
             var jsonResponse2 = {{
                 "message": "Random Password Generator",
-                "link": "/generate_password"
+                "link": "/new_password"
             }};
     
             // Function to update link container
