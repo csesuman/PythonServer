@@ -1,5 +1,4 @@
 
-
 def home_view():
     html = f"""
     <!DOCTYPE html>

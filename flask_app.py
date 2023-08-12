@@ -9,7 +9,7 @@ import random
 import string
 import time
 
-from Pages import home, reload
+from Pages import home, reload, password
 
 app = Flask(__name__)
 
@@ -43,7 +43,13 @@ def get_random_password():
     return jsonify({"password": password})
 
 
+@app.route('/new_password', methods=['GET'])
+def get_random_password_page():
+    return password.password_generate_view()
+
+
 hit = 0
+
 
 @app.route('/reload', methods=['GET'])
 def call_self():
