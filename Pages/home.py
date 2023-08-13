@@ -44,6 +44,11 @@ def home_view():
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
+        
+        <div class="link-container" id="linkContainer4">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
     
         <script>
             // Simulating JSON responses (replace these with actual data from your server)
@@ -61,6 +66,11 @@ def home_view():
                 "message": "Digital Clock",
                 "link": "/clock"
             }};
+            
+            var jsonResponse4 = {{
+                "message": "Webhook echo Server",
+                "link": "/webhook"
+            }};
     
             // Function to update link container
             function updateLinkContainer(containerId, jsonResponse) {{
@@ -77,6 +87,7 @@ def home_view():
             updateLinkContainer("linkContainer1", jsonResponse1);
             updateLinkContainer("linkContainer2", jsonResponse2);
             updateLinkContainer("linkContainer3", jsonResponse3);
+            updateLinkContainer("linkContainer4", jsonResponse4);
         </script>
     </body>
     </html>
