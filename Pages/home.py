@@ -39,6 +39,11 @@ def home_view():
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
+        
+        <div class="link-container" id="linkContainer3">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
     
         <script>
             // Simulating JSON responses (replace these with actual data from your server)
@@ -50,6 +55,11 @@ def home_view():
             var jsonResponse2 = {{
                 "message": "Random Password Generator",
                 "link": "/new_password"
+            }};
+            
+            var jsonResponse3 = {{
+                "message": "Digital Clock",
+                "link": "/clock"
             }};
     
             // Function to update link container
@@ -66,6 +76,7 @@ def home_view():
             // Update both link containers
             updateLinkContainer("linkContainer1", jsonResponse1);
             updateLinkContainer("linkContainer2", jsonResponse2);
+            updateLinkContainer("linkContainer3", jsonResponse3);
         </script>
     </body>
     </html>

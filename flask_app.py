@@ -1,20 +1,18 @@
-import time
-
-from flask import Flask, request, jsonify, send_file, render_template
-
-import urllib.request
-# from flask import requests
-import Utils
 import random
 import string
-import time
 
-from Pages import home, reload, password
+from flask import Flask, request, jsonify, render_template
+
+import Constants
+
+# from flask import requests
+import Utils
+from Pages import home, reload, password, Clock
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/') # start home page
 def hello_world():
     return home.home_view()
 
@@ -30,22 +28,33 @@ def my_ip():
         return Utils.html_view("Sorry, can't detect your public IP.")
 
 
-def generate_password(length=12):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(random.choice(characters) for _ in range(length))
-    return password
-
-
-@app.route('/generate_password', methods=['GET'])
-def get_random_password():
-    length = int(request.args.get('length', 12))  # Default length is 12 characters
-    password = generate_password(length)
-    return jsonify({"password": password})
-
-
 @app.route('/new_password', methods=['GET'])
 def get_random_password_page():
     return password.password_generate_view()
+
+
+@app.route('/clock', methods=['GET'])
+def get_clock_page():
+    return Clock.digital_clock_view()
+
+
+@app.route('/echo', methods=['POST','GET'])
+@app.route('/webhook', methods=['POST','PUT','GET','PATCH','DELETE'])
+def webhook_echo_responder():
+    data = request.data.decode('utf-8')
+    args = dict(request.args)
+    form = dict(request.form)
+
+    response = {
+        "message": "Your request is received successfully :). Delivering to you as proof",
+        "Request": {
+            "Raw Data": data,
+            "Query Parameters": args,
+            "Form Data": form
+        }
+    }
+
+    return jsonify(response)
 
 
 hit = 0
@@ -56,18 +65,6 @@ def call_self():
     global hit
     hit = hit + 1
     return reload.reload_view(hit)
-
-
-@app.route('/get_file', methods=['GET'])
-def get_file():
-    # Specify the path to the file you want to send
-    file_path = './index.html'
-
-    # Read the contents of the file
-    with open(file_path, 'r') as file:
-        file_contents = file.read()
-
-    return render_template('file_page.Pages', file_contents=file_contents)
 
 
 @app.route('/details', methods=['GET', 'POST'])
@@ -81,10 +78,10 @@ def request_details():
     # Verify the password
 
     # Extract the password from the request headers
-    # password = headers.get('Password')
+    passkey = headers.get('Password')
     #
-    # if password != Constants.CORRECT_PASSWORD:
-    #     return jsonify({"message": "Unauthorized: Invalid password"}), 401
+    if passkey != Constants.CORRECT_PASSWORD:
+        return jsonify({"message": "Unauthorized: Invalid password"}), 401
 
     response = {
         "message": "Request details fetched successfully!",
@@ -99,6 +96,19 @@ def request_details():
     }
 
     return jsonify(response)
+
+
+def generate_password(length=12):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password_data = ''.join(random.choice(characters) for _ in range(length))
+    return password_data
+
+
+@app.route('/generate_password', methods=['GET'])
+def get_random_password():
+    length = int(request.args.get('length', 12))  # Default length is 12 characters
+    password = generate_password(length)
+    return jsonify({"password": password})
 
 
 if __name__ == '__main__':
