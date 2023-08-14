@@ -1,5 +1,7 @@
 def password_generate_view():
     dropdown_options = ''.join([f'<option value="{i}">{i}</option>' for i in range(1, 513)])
+    # origin = "http://127.0.0.1:5000"
+    origin = "https://sumanbhadra.pythonanywhere.com"
 
     html = f"""
     <!DOCTYPE html>
@@ -67,7 +69,7 @@ def password_generate_view():
         <select id="parameterInput">
             {dropdown_options}
         </select>
-        <button id="fetchButton">Fetch Value</button>
+        <button id="fetchButton">Generate</button>
         <div id="result"></div>
         <button id="copyButton" style="display: none;">Copy Password</button>
         <p id="copyMessage" style="display: none;">Copied!</p>
@@ -84,13 +86,14 @@ def password_generate_view():
             }}
 
             var encodedParameterValue = encodeURIComponent(parameterValue);
-            var url = "https://sumanbhadra.pythonanywhere.com/generate_password?length=" + encodedParameterValue;
+
+            var url = "{origin}/generate_password?length=" + encodedParameterValue;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {{
                     var password = data.password; // Assuming the response has a property named "password"
-                    document.getElementById("result").innerText  = "Fetched Password: " + password;
+                    document.getElementById("result").innerText  = password;
                     document.getElementById("copyButton").style.display = "block";
                 }})
                 .catch(error => {{

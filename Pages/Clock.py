@@ -48,10 +48,22 @@ def digital_clock_view():
             <option value="America/New_York">New York</option>
             <option value="Europe/London">London</option>
             <option value="Asia/Tokyo">Tokyo</option>
+            <option value="Asia/Dhaka">Dhaka</option>
+            <option value="Asia/Singapore">Singapore</option>
+            <option value="Asia/Kolkata">Kolkata</option>
+            <option value="Asia/Dubai">Dubai</option>
+            <option value="Europe/London">London</option>
+            <option value="America/Toronto">Toronto</option>
+            <option value="Europe/Moscow">Moscow</option>
           </select>
         </div>
       </div>
       <script>
+        
+      
+      
+      
+      
         function updateClock(clockId, timeZone) {
           const now = timeZone === 'auto' ? new Date() : new Date(new Date().toLocaleString('en-US', { timeZone }));
           const hours = now.getHours().toString().padStart(2, '0');

@@ -4,8 +4,11 @@ import string
 from flask import Flask, request, jsonify, render_template
 
 import Constants
+import requests
+import pycountry
 
-# from flask import requests
+
+
 import Utils
 from Pages import home, reload, password, Clock
 
@@ -20,19 +23,53 @@ def hello_world():
 @app.route('/myip')
 def my_ip():
     x_forwarded_for = request.headers.getlist("X-Forwarded-For")
+    response = requests.get('http://ipinfo.io')
+    data = response.json()
 
-    if x_forwarded_for:
-        ip = x_forwarded_for[0]
-        return Utils.html_view("Your Public IP: " + ip)
+    if "error" in data:
+        response = requests.get('https://ip-api.io/json')
+        data = response.json()
+        try:
+            ip_address = data['ip']
+            city = data['city']
+            region = data['region_name']
+            full_country_name = data['country_name']
+            return Utils.html_view(ip_address, city, region, full_country_name)
+        except AttributeError:
+            pass
+
     else:
-        return Utils.html_view("Sorry, can't detect your public IP.")
+        try:
+            ip_address = data['ip']
+            city = data['city']
+            region = data['region']
+            country_code = data['country']
+            country = pycountry.countries.get(alpha_2=country_code)
+            full_country_name = country.name
+            return Utils.html_view(ip_address, city, region, full_country_name)
+        except AttributeError:
+            pass
 
+
+@app.route('/iplocation')
+def get_public_ip_and_location():
+    try:
+        response = requests.get('http://ipinfo.io')
+        data = response.json()
+
+        ip_address = data['ip']
+        location = data['city'] + ', ' + data['region'] + ', ' + data['country']
+
+        return response.json()
+    except Exception as e:
+        return None, str(e)
 
 @app.route('/new_password', methods=['GET'])
 def get_random_password_page():
     return password.password_generate_view()
 
 
+# https://raw.githubusercontent.com/eggert/tz/master/zone.tab # All Cities are here!!
 @app.route('/clock', methods=['GET'])
 def get_clock_page():
     return Clock.digital_clock_view()
