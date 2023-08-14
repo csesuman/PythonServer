@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 
 import Constants
 import requests
-import pycountry
+# import pycountry
 
 
 
@@ -23,8 +23,12 @@ def hello_world():
 @app.route('/myip')
 def my_ip():
     x_forwarded_for = request.headers.getlist("X-Forwarded-For")
-    response = requests.get('http://ipinfo.io')
-    data = response.json()
+
+    # url = f"http://ipinfo.io/{x_forwarded_for}/json"
+    # response = requests.get(url)
+
+    return x_forwarded_for
+    data = response
 
     if "error" in data:
         response = requests.get('https://ip-api.io/json')
@@ -44,9 +48,9 @@ def my_ip():
             city = data['city']
             region = data['region']
             country_code = data['country']
-            country = pycountry.countries.get(alpha_2=country_code)
-            full_country_name = country.name
-            return Utils.html_view(ip_address, city, region, full_country_name)
+            # country = pycountry.countries.get(alpha_2=country_code) // fix ii
+            # full_country_name = country.name
+            return Utils.html_view(ip_address, city, region, country_code)
         except AttributeError:
             pass
 
