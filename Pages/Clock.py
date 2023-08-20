@@ -52,6 +52,8 @@ def digital_clock_view():
             <option value="Asia/Singapore">Singapore</option>
             <option value="Asia/Kolkata">Kolkata</option>
             <option value="Asia/Dubai">Dubai</option>
+            <option value="Asia/Shanghai">Shanghai</option>
+            
             <option value="Europe/London">London</option>
             <option value="America/Toronto">Toronto</option>
             <option value="Europe/Moscow">Moscow</option>

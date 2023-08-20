@@ -49,6 +49,31 @@ def home_view():
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
+        
+        <div class="link-container" id="linkContainer5">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+        
+        <div class="link-container" id="linkContainer6">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+        
+        <div class="link-container" id="linkContainer7">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+        
+            <div class="link-container" id="linkContainer8">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+        
+            <div class="link-container" id="linkContainer9">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
     
         <script>
             // Simulating JSON responses (replace these with actual data from your server)
@@ -56,20 +81,45 @@ def home_view():
                 "message": "My Public IP",
                 "link": "/myip"
             }};
-    
+            
             var jsonResponse2 = {{
+                "message": "IP information",
+                "link": "/ipinformation"
+            }};
+    
+            var jsonResponse3 = {{
                 "message": "Random Password Generator",
                 "link": "/new_password"
             }};
             
-            var jsonResponse3 = {{
+            var jsonResponse4 = {{
                 "message": "Digital Clock",
                 "link": "/clock"
             }};
             
-            var jsonResponse4 = {{
+            var jsonResponse5 = {{
                 "message": "Webhook echo Server",
                 "link": "/webhook"
+            }};
+            
+            var jsonResponse6 = {{
+                "message": "Reload Counter",
+                "link": "/reload"
+            }};
+            
+            var jsonResponse7 = {{
+                "message": "index",
+                "link": "/index"
+            }};
+            
+            var jsonResponse8 = {{
+                "message": "Save Requests",
+                "link": "/save"
+            }};
+            
+            var jsonResponse9 = {{
+                "message": "Call API by Type",
+                "link": "/make_request"
             }};
     
             // Function to update link container
@@ -88,6 +138,11 @@ def home_view():
             updateLinkContainer("linkContainer2", jsonResponse2);
             updateLinkContainer("linkContainer3", jsonResponse3);
             updateLinkContainer("linkContainer4", jsonResponse4);
+            updateLinkContainer("linkContainer5", jsonResponse5);
+            updateLinkContainer("linkContainer6", jsonResponse6);
+            updateLinkContainer("linkContainer7", jsonResponse7);
+            updateLinkContainer("linkContainer8", jsonResponse8);
+            updateLinkContainer("linkContainer9", jsonResponse9);
         </script>
     </body>
     </html>

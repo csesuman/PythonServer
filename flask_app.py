@@ -1,18 +1,16 @@
 import datetime
 import random
-import socket
 import string
 import uuid
 
+import requests
 from flask import Flask, request, jsonify, render_template, json
 
 import Constants
-import requests
-# import pycountry
-
-
 import Utils
 from Pages import home, reload, password, Clock
+
+# import pycountry
 
 app = Flask(__name__)
 
@@ -22,7 +20,7 @@ def hello_world():
     return home.home_view()
 
 
-@app.route('/myip')
+@app.route('/myip')# 1
 def my_ip():
     x_forwarded_for = request.headers.getlist("X-Forwarded-For")
     ip = x_forwarded_for[0]
@@ -42,34 +40,31 @@ def my_ip():
         pass
 
 
-@app.route('/iplocation')
+@app.route('/ipinformation') #2
 def get_public_ip_and_location():
     try:
         response = requests.get('http://ipinfo.io')
         data = response.json()
-
-        ip_address = data['ip']
-        location = data['city'] + ', ' + data['region'] + ', ' + data['country']
 
         return response.json()
     except Exception as e:
         return None, str(e)
 
 
-@app.route('/new_password', methods=['GET'])  # password generator
+@app.route('/new_password', methods=['GET'])  #3 # password generator
 def get_random_password_page():
     return password.password_generate_view()
 
 
 # https://raw.githubusercontent.com/eggert/tz/master/zone.tab # All Cities are here!!
-@app.route('/clock', methods=['GET'])
+@app.route('/clock', methods=['GET']) #4
 def get_clock_page():
     return Clock.digital_clock_view()
 
 
 @app.route('/echo', methods=['POST', 'GET'])
 @app.route('/webhook', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
-def webhook_echo_responder():
+def webhook_echo_responder(): #5  #Make the real one
     data = request.data.decode('utf-8')
     args = dict(request.args)
     form = dict(request.form)
@@ -89,7 +84,7 @@ def webhook_echo_responder():
 hit = 0
 
 
-@app.route('/reload', methods=['GET'])
+@app.route('/reload', methods=['GET']) #6
 def call_self():
     global hit
     hit = hit + 1
@@ -105,9 +100,6 @@ def internal_details():
     form = dict(request.form)
     # Verify the password
 
-    # Extract the password from the request headers
-    passkey = headers.get('Password')
-
     response = {
         "message": "Request details fetched successfully!",
         "details": {
@@ -120,11 +112,10 @@ def internal_details():
         }
     }
 
-
     return response
 
 
-@app.route('/details', methods=['GET', 'POST'])
+@app.route('/details', methods=['GET', 'POST']) #7 # Protected!!
 def request_details():
     method = request.method
     url = request.url
@@ -155,7 +146,7 @@ def request_details():
     return jsonify(response)
 
 
-@app.route('/index')
+@app.route('/index') #8
 def index():
     details = internal_details()
     json_string = json.dumps(details)
@@ -170,7 +161,7 @@ def index():
     return render_template('input_message.html', unique_id=unique_id)
 
 
-@app.route('/save', methods=['POST'])
+@app.route('/save', methods=['POST']) #9
 def save_text():
     try:
         data = request.get_json()
@@ -178,10 +169,6 @@ def save_text():
 
         with open('saved_text.txt', 'a') as file:
             file.write(text + '\n')
-
-        # with open('saved_text.txt', 'a') as file:
-        #     json.dump(details, file)
-        #     file.write('\n' + text + '\n')
 
         return jsonify(message='Text saved to server successfully!')
     except Exception as e:
