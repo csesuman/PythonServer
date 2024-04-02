@@ -97,7 +97,7 @@ def password_generate_view():
                     document.getElementById("copyButton").style.display = "block";
                 }})
                 .catch(error => {{
-                    console.error("Error fetching data:", error);
+                    console.error("Error fetching data: ", error);
                     document.getElementById("result").innerHTML = "Error fetching data";
                 }});
 

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="5">
+<title>Display Response Items</title>
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+        color: black; /* Adjust text color for headers */
+    }
+    .method-cell {
+        text-align: center;
+        width: 10%; /* Allocate 15% width for each of these columns */
+    }
+    .time-cell {
+        width: 15%; /* Allocate 15% width for each of these columns */
+    }
+    .json-cell {
+        width: 75%; /* Allocate 70% width for the body column */
+        position: relative; /* Enable relative positioning */
+    }
+    .method-name.get {
+        background-color: #4CAF50; /* Green */
+        color: white;
+    }
+    .method-name.post {
+        background-color: #f44336; /* Red */
+        color: white;
+    }
+    .method-name.put {
+        background-color: #2196F3; /* Blue */
+        color: white;
+    }
+    .method-name.delete {
+        background-color: #FFC107; /* Yellow */
+        color: black;
+    }
+    .method-name.patch {
+        background-color: #9C27B0; /* Purple */
+        color: white;
+    }
+    .method-name.head {
+        background-color: #607D8B; /* Gray */
+        color: white;
+    }
+    .method-name.options {
+        background-color: #FF5722; /* Orange */
+        color: white;
+    }
+    .json-display {
+        white-space: pre-wrap;
+        display: none; /* Initially hide the formatted JSON */
+    }
+    .expand-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+    }
+    .json-single-line {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+</head>
+<body>
+
+<h2>Response Items</h2>
+
+<table id="responseTable">
+    <thead>
+        <tr>
+            <th class="time-cell">Time</th>
+            <th class="method-cell">Method</th>
+            <th class="json-cell">Body</th>
+        </tr>
+    </thead>
+    <tbody id="responseTableBody">
+        {% for response in responses|reverse %}
+        <tr>
+            <td class="time-cell">{{ response.time }}</td>
+            <td class="method-cell method-name {{ response.method | lower }}">{{ response.method }}</td>
+            <td class="json-cell">
+                <div class="json-single-line">{{ response.body }}</div>
+                <button class="expand-btn" onclick="toggleJsonDisplay(this)">Expand</button>
+                <pre class="json-display">{{ response.body | safe }}</pre>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function toggleJsonDisplay(button) {
+        var cell = button.parentElement;
+        var singleLine = cell.querySelector('.json-single-line');
+        var expandedJson = cell.querySelector('.json-display');
+
+        if (singleLine.style.display === 'none') {
+            singleLine.style.display = 'block';
+            expandedJson.style.display = 'none';
+            button.innerText = 'Expand';
+        } else {
+            singleLine.style.display = 'none';
+            expandedJson.style.display = 'block';
+            button.innerText = 'Collapse';
+        }
+    }
+</script>
+
+</body>
+</html>

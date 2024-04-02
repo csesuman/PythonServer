@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text File Saver</title>
+    <title>Message</title>
 
     <style>
         body {
@@ -54,7 +54,6 @@
 </div>
 
 <script>
-    var javascriptUniqueId = "{{ unique_id }}"
     const textArea = document.getElementById('textArea');
     const charCount = document.getElementById('charCount');
 
@@ -64,7 +63,7 @@
     });
 
     document.getElementById('saveButton').addEventListener('click', function() {
-        const textToSave = javascriptUniqueId + " >> " + document.getElementById('textArea').value;
+        const textToSave = "{{ b }} >> " + document.getElementById('textArea').value;
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/save', true);
@@ -72,7 +71,7 @@
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                alert('Text appended to server file successfully!');
+                alert('Sent Successfully! Thank you for your message! :) ');
             }
         };
 
