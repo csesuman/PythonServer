@@ -4,7 +4,7 @@ import string
 import uuid
 
 import requests
-from flask import Flask, request, jsonify, render_template, json
+from flask import Flask, request, jsonify, render_template, json, redirect, url_for
 
 import Constants
 import Utils
@@ -82,8 +82,6 @@ def webhook_echo_responder(): #5  #Make the real one
 
 
 hit = 0
-
-
 @app.route('/reload', methods=['GET']) #6
 def call_self():
     global hit
@@ -206,6 +204,47 @@ def make_request():
     except Exception as e:
         error_message = str(e)
         return jsonify({'error': error_message}), 500
+
+
+webhook_data = {}
+
+@app.route('/webhooks/<key>', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
+def receive_webhook(key):
+    data = request.json
+    method = request.method
+    data = request.data.decode('utf-8')
+
+    # Get current date and time
+    current_time = datetime.datetime.now()
+    # Format the date and time in a different style
+    formatted_time = current_time.strftime("%A, %B %d, %Y %I:%M:%S %p")
+    response = {
+            "time": formatted_time,
+            "method": method,
+            "body": data
+    }
+
+    if key not in webhook_data:
+        webhook_data[key] = []
+    webhook_data[key].append(response)
+    # print(f"Received webhook data for URL {key}: {data}")
+    return "Webhook received successfully"
+
+@app.route('/webhook-received', methods=['GET'])
+def handle_webhook():
+    # Generate a random UUID
+    key = str(uuid.uuid4())
+    webhook_data[key] = []
+    # Redirect to the /webhook-received endpoint with the generated key
+    return redirect(url_for('display_webhooks', key=key))
+
+
+@app.route('/webhook-received/<key>', methods=['GET'])
+def display_webhooks(key):
+    if key in webhook_data:
+        return render_template('webhooks.html', responses=webhook_data[key])
+    else:
+        return jsonify({"error": "No webhooks found for the provided key"}), 404
 
 
 def generate_password(length=12):
