@@ -62,8 +62,8 @@ def get_clock_page():
     return Clock.digital_clock_view()
 
 
-@app.route('/echo', methods=['POST', 'GET'])
-@app.route('/webhook', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
+@app.route('/echo', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
+# @app.route('/webhook', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
 def webhook_echo_responder(): #5  #Make the real one
     data = request.data.decode('utf-8')
     args = dict(request.args)
@@ -210,7 +210,7 @@ webhook_data = {}
 
 @app.route('/webhooks/<key>', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
 def receive_webhook(key):
-    data = request.json
+
     method = request.method
     data = request.data.decode('utf-8')
 
@@ -227,8 +227,9 @@ def receive_webhook(key):
     if key not in webhook_data:
         webhook_data[key] = []
     webhook_data[key].append(response)
-    # print(f"Received webhook data for URL {key}: {data}")
-    return "Webhook received successfully"
+
+    link = request.url_root + "webhook-received/" + key
+    return "Webhook received successfully, Check on: " + link
 
 @app.route('/webhook-received', methods=['GET'])
 def handle_webhook():
@@ -239,12 +240,25 @@ def handle_webhook():
     return redirect(url_for('display_webhooks', key=key))
 
 
+@app.route('/mac-address', methods=['GET']) # R&D needed
+def get_mac_address():
+    mac = uuid.getnode()
+    mac_address = ':'.join(['{:02x}'.format((mac >> elements) & 0xff) for elements in range(0,2*6,2)][::-1])
+    return jsonify(mac_address)
+
+
 @app.route('/webhook-received/<key>', methods=['GET'])
 def display_webhooks(key):
-    if key in webhook_data:
-        return render_template('webhooks.html', responses=webhook_data[key])
-    else:
-        return jsonify({"error": "No webhooks found for the provided key"}), 404
+    base_url = request.url_root
+    webhooks_url = base_url + "webhooks/" + key
+
+    # if key in webhook_data:
+    #     webhook_data[key] = []
+
+    if key not in webhook_data:
+        webhook_data[key] = []
+
+    return render_template('webhooks.html', key=webhooks_url, responses=webhook_data[key])
 
 
 def generate_password(length=12):

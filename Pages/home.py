@@ -6,20 +6,20 @@ def home_view():
     <head>
         <title>Suman Tech</title>
         <style>
-            body {{
+        body {{
                 background-color: black;
                 display: flex;
                 flex-direction: column;
-                align-items: top;
-                justify-content: top;
-                height: 0vh;
-                margin: 0;
+                align-items: center; /* Center horizontally */
+                justify-content: center; /* Center vertically */
+                height: 100vh; /* Change 0vh to 100vh to fill the viewport */
+                margin: 0; /* Adjusted to remove extra margin */
                 font-family: Arial, sans-serif;
             }}
 
             .link-container {{
-                background-color:navy;
-                margin: 0px;
+                background-color: transparent;
+                margin: 10px;
                 text-align: center;
             }}
     
@@ -47,7 +47,11 @@ def home_view():
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
-        <div class="link-container" id="linkContainer7">
+        <div class="link-container" id="linkContainer6">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+                <div class="link-container" id="linkContainer7">
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
@@ -75,12 +79,17 @@ def home_view():
             }};
             
             var jsonResponse5 = {{
-                "message": "Webhook echo Server",
-                "link": "/webhook"
+                "message": "Echo Server",
+                "link": "/echo"
+            }};
+
+            var jsonResponse6 = {{
+                "message": ">>>> Webhook Server <<<<<",
+                "link": "/webhook-received"
             }};
             
             var jsonResponse7 = {{
-                "message": "index",
+                "message": "Give Me Advice",
                 "link": "/index"
             }};
 
@@ -102,6 +111,7 @@ def home_view():
             updateLinkContainer("linkContainer3", jsonResponse3);
             updateLinkContainer("linkContainer4", jsonResponse4);
             updateLinkContainer("linkContainer5", jsonResponse5);
+            updateLinkContainer("linkContainer6", jsonResponse6);
             updateLinkContainer("linkContainer7", jsonResponse7);
             updateLinkContainer("linkContainer9", jsonResponse9);
         </script>

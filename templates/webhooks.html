@@ -36,31 +36,31 @@
         position: relative; /* Enable relative positioning */
     }
     .method-name.get {
-        background-color: #4CAF50; /* Green */
+        background-color: #2396a0; /* Green */
         color: white;
     }
     .method-name.post {
-        background-color: #f44336; /* Red */
+        background-color: #016429; /* Red */
         color: white;
     }
     .method-name.put {
-        background-color: #2196F3; /* Blue */
+        background-color: #1f659e; /* Blue */
         color: white;
     }
     .method-name.delete {
-        background-color: #FFC107; /* Yellow */
-        color: black;
+        background-color: #f87306; /* Yellow */
+        color: white;
     }
     .method-name.patch {
-        background-color: #9C27B0; /* Purple */
+        background-color: #3615ac; /* Purple */
         color: white;
     }
     .method-name.head {
-        background-color: #607D8B; /* Gray */
+        background-color: #cad717; /* Gray */
         color: white;
     }
     .method-name.options {
-        background-color: #FF5722; /* Orange */
+        background-color: #4a2ec6; /* Orange */
         color: white;
     }
     .json-display {
@@ -87,7 +87,11 @@
 </head>
 <body>
 
-<h2>Response Items</h2>
+<h2>Response Items - Call: <a href="{{key}}">{{key}}</a>
+    <button onclick="copyKey()">Copy URL</button>    </h2>
+
+
+
 
 <table id="responseTable">
     <thead>
@@ -113,6 +117,32 @@
 </table>
 
 <script>
+    function copyKey() {
+        // Get the value of {{key}}
+        var key = "{{key}}";
+        
+        // Create a temporary textarea element
+        var tempTextArea = document.createElement('textarea');
+        
+        // Set the value of the textarea to the key
+        tempTextArea.value = key;
+        
+        // Append the textarea to the DOM
+        document.body.appendChild(tempTextArea);
+        
+        // Select the text inside the textarea
+        tempTextArea.select();
+        
+        // Copy the selected text
+        document.execCommand('copy');
+        
+        // Remove the textarea from the DOM
+        document.body.removeChild(tempTextArea);
+        
+        // Alert the user that the text has been copied
+        alert('Key copied!');
+    }
+
     function toggleJsonDisplay(button) {
         var cell = button.parentElement;
         var singleLine = cell.querySelector('.json-single-line');
