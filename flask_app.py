@@ -9,8 +9,12 @@ from flask import Flask, request, jsonify, render_template, json, redirect, url_
 import Constants
 import Utils
 from Pages import home, reload, password, Clock
+import sys
 
 # import pycountry
+
+def sizeof_string_in_bytes(string):
+    return sys.getsizeof(string)
 
 app = Flask(__name__)
 
@@ -208,7 +212,7 @@ def make_request():
 
 webhook_data = {}
 
-@app.route('/webhooks/<key>', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE'])
+@app.route('/webhooks/<key>', methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'])
 def receive_webhook(key):
 
     method = request.method
@@ -224,12 +228,23 @@ def receive_webhook(key):
             "body": data
     }
 
+
+    size_in_bytes = sizeof_string_in_bytes(response)
+
+    if (size_in_bytes > 500):
+        response = {
+            "time": formatted_time,
+            "method": method,
+            "body": "Webhook is very Large. Size: " + str(size_in_bytes) + "bytes. DISCARDED"
+        }
+
     if key not in webhook_data:
         webhook_data[key] = []
     webhook_data[key].append(response)
 
     link = request.url_root + "webhook-received/" + key
-    return "Webhook received successfully, Check on: " + link
+    return "Webhook received successfully, Size: " + str(size_in_bytes)  + " bytes. Check on: " + link
+
 
 @app.route('/webhook-received', methods=['GET'])
 def handle_webhook():
@@ -252,13 +267,13 @@ def display_webhooks(key):
     base_url = request.url_root
     webhooks_url = base_url + "webhooks/" + key
 
-    # if key in webhook_data:
-    #     webhook_data[key] = []
-
+    global refresh_content
     if key not in webhook_data:
         webhook_data[key] = []
 
-    return render_template('webhooks.html', key=webhooks_url, responses=webhook_data[key])
+    mapKey = key
+
+    return render_template('webhooks.html', mapKey=mapKey, refresh_content=refresh_content, key=webhooks_url, responses=webhook_data[key])
 
 
 def generate_password(length=12):
@@ -273,6 +288,23 @@ def get_random_password():
     password = generate_password(length)
     return jsonify({"password": password})
 
+
+refresh_content = "5"  # Default value
+
+@app.route('/remove_refresh', methods=['POST'])
+def remove_refresh():
+    global refresh_content
+    refresh_content = None
+    key = request.form.get('key')
+    return redirect(url_for('display_webhooks', key=key))
+
+
+@app.route('/enable_refresh', methods=['POST'])
+def enable_refresh():
+    global refresh_content
+    refresh_content = 5
+    key = request.form.get('key')
+    return redirect(url_for('display_webhooks', key=key))
 
 if __name__ == '__main__':
     app.run(debug=True)
