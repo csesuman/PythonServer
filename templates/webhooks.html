@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="5">
+{% if refresh_content %}
+<meta id="refreshMeta" http-equiv="refresh" content="{{ refresh_content }}">
+{% endif %}
+
 <title>Display Response Items</title>
 <style>
     body {
@@ -32,8 +35,10 @@
         width: 15%; /* Allocate 15% width for each of these columns */
     }
     .json-cell {
+        max-width: 500px; /* Adjust max-width as needed */
         width: 75%; /* Allocate 70% width for the body column */
         position: relative; /* Enable relative positioning */
+        overflow: auto; /* Add scrollbar when content overflows */
     }
     .method-name.get {
         background-color: #2396a0; /* Green */
@@ -83,16 +88,37 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
+    .toggle-refresh-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-top: 0.5em;
+        background-color: #7cf79d;
+        color: #0e0e0e;
+        margin-right: 1em;
+    }
+    .toggle-refresh-btn.disabled {
+            background-color: #f32207;
+    }
 </style>
 </head>
 <body>
 
 <h2>Response Items - Call: <a href="{{key}}">{{key}}</a>
-    <button onclick="copyKey()">Copy URL</button>    </h2>
+    <button onclick="copyKey()">Copy URL</button>    
+    {% if refresh_content %}
+        <form method="POST" action="/remove_refresh">
+            <input type="hidden" name="key" value={{mapKey}}>
+            <button type="submit" id="toggleRefreshBtn" class="toggle-refresh-btn">Refreshing...</button>
+        </form>
+    {% else %}
 
-
-
-
+        <form method="POST" action="/enable_refresh">
+            <input type="hidden" name="key" value={{mapKey}}>
+            <button type="submit" id="toggleRefreshBtn" class="toggle-refresh-btn disabled">Disabled Refreshing</button>
+        </form>
+    {% endif %}
+</h2>
 <table id="responseTable">
     <thead>
         <tr>
@@ -117,6 +143,7 @@
 </table>
 
 <script>
+    var metaTag = document.getElementById("refreshMeta");
     function copyKey() {
         // Get the value of {{key}}
         var key = "{{key}}";
