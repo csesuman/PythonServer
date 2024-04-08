@@ -262,18 +262,22 @@ def get_mac_address():
     return jsonify(mac_address)
 
 
+refresh_time = "5"  # Default value 5 seconds
+refresh_map = {}
+
 @app.route('/webhook-received/<key>', methods=['GET'])
 def display_webhooks(key):
     base_url = request.url_root
     webhooks_url = base_url + "webhooks/" + key
 
-    global refresh_content
     if key not in webhook_data:
         webhook_data[key] = []
+    if key not in refresh_map:
+        refresh_map[key] = refresh_time
 
     mapKey = key
 
-    return render_template('webhooks.html', mapKey=mapKey, refresh_content=refresh_content, key=webhooks_url, responses=webhook_data[key])
+    return render_template('webhooks.html', mapKey=mapKey, refresh_content=refresh_map[key], key=webhooks_url, responses=webhook_data[key])
 
 
 def generate_password(length=12):
@@ -289,21 +293,17 @@ def get_random_password():
     return jsonify({"password": password})
 
 
-refresh_content = "5"  # Default value
-
 @app.route('/remove_refresh', methods=['POST'])
 def remove_refresh():
-    global refresh_content
-    refresh_content = None
     key = request.form.get('key')
+    refresh_map[key] = None;
     return redirect(url_for('display_webhooks', key=key))
 
 
 @app.route('/enable_refresh', methods=['POST'])
 def enable_refresh():
-    global refresh_content
-    refresh_content = 5
     key = request.form.get('key')
+    refresh_map[key] = refresh_time;
     return redirect(url_for('display_webhooks', key=key))
 
 if __name__ == '__main__':
