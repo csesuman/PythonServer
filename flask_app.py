@@ -242,8 +242,8 @@ def receive_webhook(key):
         webhook_data[key] = []
     webhook_data[key].append(response)
 
-    link = request.url_root + "webhook-received/" + key
-    return "Webhook received successfully, Size: " + str(size_in_bytes)  + " bytes. Check on: " + link
+    # link = request.url_root + "webhook-received/" + key
+    return "Webhook received successfully, Size: " + str(size_in_bytes)  + " bytes."
 
 
 @app.route('/webhook-received', methods=['GET'])
