@@ -181,10 +181,12 @@
             button.innerText = 'Expand';
         } else {
             singleLine.style.display = 'none';
+            expandedJson.innerHTML = JSON.stringify(JSON.parse(singleLine.innerText), null, 2);
             expandedJson.style.display = 'block';
             button.innerText = 'Collapse';
         }
     }
+    
 </script>
 
 </body>
