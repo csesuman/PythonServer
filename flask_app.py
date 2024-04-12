@@ -10,17 +10,18 @@ import Constants
 import Utils
 from Pages import home, reload, password, Clock
 import sys
+import numpy as np
+import copy
 
-# import pycountry
 
 def sizeof_string_in_bytes(string):
     return sys.getsizeof(string)
 
 app = Flask(__name__)
 
-
 @app.route('/')  # start home page
 def hello_world():
+
     return home.home_view()
 
 
@@ -198,6 +199,8 @@ def make_request():
             else:
                 return jsonify({'error': 'Unsupported request type'}), 400
 
+
+
             response_info = {
                 'status_code': response.status_code,
                 'content': response.text
@@ -217,17 +220,13 @@ def receive_webhook(key):
 
     method = request.method
     data = request.data.decode('utf-8')
-
-    # Get current date and time
-    current_time = datetime.datetime.now()
-    # Format the date and time in a different style
-    formatted_time = current_time.strftime("%A, %B %d, %Y %I:%M:%S %p")
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+    formatted_time = current_time.timestamp()  * 1000 # Convert to milliseconds
     response = {
             "time": formatted_time,
             "method": method,
             "body": data
     }
-
 
     size_in_bytes = sizeof_string_in_bytes(response)
 
@@ -265,6 +264,10 @@ def get_mac_address():
 refresh_time = "5"  # Default value 5 seconds
 refresh_map = {}
 
+
+def milliseconds_to_datetime(milliseconds):
+    return datetime.datetime.fromtimestamp(milliseconds / 1000.0)
+
 @app.route('/webhook-received/<key>', methods=['GET'])
 def display_webhooks(key):
     base_url = request.url_root
@@ -277,7 +280,15 @@ def display_webhooks(key):
 
     mapKey = key
 
-    return render_template('webhooks.html', mapKey=mapKey, refresh_content=refresh_map[key], key=webhooks_url, responses=webhook_data[key])
+    currentData = copy.deepcopy(webhook_data[key])
+
+    for item in currentData:
+        current_time = item["time"]
+        updated_time = np.int64(current_time + 14400000) # Adjust timezone here
+        updateDate = milliseconds_to_datetime(updated_time)
+        item["time"] = updateDate.strftime("%A, %B %d, %Y %I:%M:%S %p")
+
+    return render_template('webhooks.html', mapKey=mapKey, refresh_content=refresh_map[key], key=webhooks_url, responses=currentData)
 
 
 def generate_password(length=12):
@@ -305,6 +316,7 @@ def enable_refresh():
     key = request.form.get('key')
     refresh_map[key] = refresh_time;
     return redirect(url_for('display_webhooks', key=key))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

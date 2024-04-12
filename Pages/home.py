@@ -67,7 +67,6 @@ def home_view():
                 "message": "My Public IP",
                 "link": "/myip"
             }};
-    
             var jsonResponse3 = {{
                 "message": "Random Password Generator",
                 "link": "/new_password"
