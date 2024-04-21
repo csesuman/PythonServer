@@ -318,5 +318,34 @@ def enable_refresh():
     return redirect(url_for('display_webhooks', key=key))
 
 
+import pyotp
+
+
+# MAKE TO DO LIST
+
+@app.route('/generate_otp_code/<secret_key>')
+def generate_code(secret_key):
+    # # Generate a new secret key
+    # secret_key = "X6O2YHKVYX" #pyotp.random_base32()
+    # Create a TOTP object
+    totp = pyotp.TOTP(secret_key)
+
+    # Get the current verification code
+    verification_code = totp.now()
+
+    # Return the verification code as JSON
+    return jsonify({"verification_code": verification_code})
+
+
+@app.route('/random-joke')
+def random_joke():
+    response = requests.get('https://api.chucknorris.io/jokes/random')
+    if response.status_code == 200:
+        joke = response.json()['value']
+        return jsonify({'joke': joke})
+    else:
+        return jsonify({'error': 'Failed to fetch joke'}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
