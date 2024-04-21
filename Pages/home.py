@@ -51,7 +51,11 @@ def home_view():
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
-                <div class="link-container" id="linkContainer7">
+        <div class="link-container" id="linkContainer7">
+            <p class="message"></p>
+            <a class="link" href="#" target="_blank"></a>
+        </div>
+        <div class="link-container" id="linkContainer8">
             <p class="message"></p>
             <a class="link" href="#" target="_blank"></a>
         </div>
@@ -92,6 +96,11 @@ def home_view():
                 "link": "/index"
             }};
 
+            var jsonResponse8 = {{
+                "message": "Randome Jokes",
+                "link": "/random-joke"
+            }};
+
             var jsonResponse9 = {{
                 "message": "Call API by Type",
                 "link": "/make_request"
@@ -112,6 +121,7 @@ def home_view():
             updateLinkContainer("linkContainer5", jsonResponse5);
             updateLinkContainer("linkContainer6", jsonResponse6);
             updateLinkContainer("linkContainer7", jsonResponse7);
+            updateLinkContainer("linkContainer8", jsonResponse8);
             updateLinkContainer("linkContainer9", jsonResponse9);
         </script>
     </body>
